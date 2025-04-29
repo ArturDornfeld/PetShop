@@ -23,4 +23,9 @@ public class ServicoAgendado {
         servico.exibirInformacoes();
         System.out.println("Data agendada: " + dataAgendada);
     }
+    
+    public void setDataAgendada(LocalDate dataAgendada) {
+        this.dataAgendada = dataAgendada;
+    }
+
 }

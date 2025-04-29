@@ -1,5 +1,6 @@
 package aplicativo;
 
+import java.time.LocalDate;
 import Controller.PetShop;
 import model.*;
 
@@ -11,17 +12,19 @@ public class Main {
         PetShop petShop = new PetShop();
 
         while (true) {
-            System.out.println("\n--- Menu Pet Shop ---");
-            System.out.println("1. Cadastrar cliente");
-            System.out.println("2. Listar clientes");
-            System.out.println("3. Buscar cliente");
-            System.out.println("4. Remover cliente");
-            System.out.println("5. Adicionar pet a cliente");
-            System.out.println("6. Listar pets de um cliente");
-            System.out.println("7. Remover pet de um cliente");
-            System.out.println("8. Agendar serviço para pet");
-            System.out.println("0. Sair");
-            System.out.print("Escolha: ");
+        	System.out.println("\n--- Menu Pet Shop ---");
+        	System.out.println("1. Cadastrar cliente");
+        	System.out.println("2. Listar clientes");
+        	System.out.println("3. Buscar cliente");
+        	System.out.println("4. Remover cliente");
+        	System.out.println("5. Adicionar pet a cliente");
+        	System.out.println("6. Listar pets de um cliente");
+        	System.out.println("7. Remover pet de um cliente");
+        	System.out.println("8. Agendar serviço para pet");
+        	System.out.println("9. Listar serviços agendados de um pet");
+        	System.out.println("10. Editar serviço agendado de um pet");
+        	System.out.println("0. Sair");
+        	System.out.print("Escolha: ");
             int opcao = sc.nextInt();
             sc.nextLine();
 
@@ -128,7 +131,9 @@ public class Main {
                             int tipo = sc.nextInt();
                             System.out.print("Preço: ");
                             double preco = sc.nextDouble();
-                            sc.nextLine();
+                            sc.nextLine(); // limpar buffer
+                            System.out.print("Data do serviço (AAAA-MM-DD): ");
+                            String dataStr = sc.nextLine();
                             Servico servico = switch (tipo) {
                                 case 1 -> new BanhoETosa(preco);
                                 case 2 -> new ConsultaVeterinaria(preco);
@@ -137,8 +142,10 @@ public class Main {
                                 default -> null;
                             };
                             if (servico != null) {
-                                pet.adicionarServico(servico);
-                                System.out.println("Serviço agendado.");
+                                LocalDate data = LocalDate.parse(dataStr);
+                                ServicoAgendado agendado = new ServicoAgendado(servico, data);
+                                pet.adicionarServicoAgendado(agendado);
+                                System.out.println("Serviço agendado com sucesso.");
                             } else {
                                 System.out.println("Serviço inválido.");
                             }
@@ -149,6 +156,59 @@ public class Main {
                         System.out.println("Cliente não encontrado.");
                     }
                 }
+                
+                case 9 -> {
+                    System.out.print("Nome do cliente: ");
+                    String nome = sc.nextLine();
+                    Cliente cliente = petShop.buscarClientePorNome(nome);
+                    if (cliente != null) {
+                        System.out.print("Nome do pet: ");
+                        String nomePet = sc.nextLine();
+                        Pet pet = cliente.buscarPetPorNome(nomePet);
+                        if (pet != null) {
+                            pet.listarServicosAgendados();
+                        } else {
+                            System.out.println("Pet não encontrado.");
+                        }
+                    } else {
+                        System.out.println("Cliente não encontrado.");
+                    }
+                }
+                
+                case 10 -> {
+                    System.out.print("Nome do cliente: ");
+                    String nome = sc.nextLine();
+                    Cliente cliente = petShop.buscarClientePorNome(nome);
+                    if (cliente != null) {
+                        System.out.print("Nome do pet: ");
+                        String nomePet = sc.nextLine();
+                        Pet pet = cliente.buscarPetPorNome(nomePet);
+                        if (pet != null) {
+                            System.out.print("Tipo do serviço a editar: ");
+                            String tipo = sc.nextLine();
+                            ServicoAgendado sa = pet.buscarServicoAgendadoPorTipo(tipo);
+                            if (sa != null) {
+                                System.out.print("Novo preço: ");
+                                double novoPreco = sc.nextDouble();
+                                sc.nextLine();
+                                System.out.print("Nova data (AAAA-MM-DD): ");
+                                String novaData = sc.nextLine();
+                                sa.getServico().setPreco(novoPreco);
+                                sa.setDataAgendada(LocalDate.parse(novaData));
+                                System.out.println("Serviço atualizado.");
+                            } else {
+                                System.out.println("Serviço não encontrado.");
+                            }
+                        } else {
+                            System.out.println("Pet não encontrado.");
+                        }
+                    } else {
+                        System.out.println("Cliente não encontrado.");
+                    }
+                }
+
+
+
                 case 0 -> {
                     System.out.println("Sistema encerrado.");
                     sc.close();

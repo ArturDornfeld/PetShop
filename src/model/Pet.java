@@ -3,7 +3,6 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-/* Classe que representa um pet de um cliente */
 public class Pet {
     private String nome;
     private String especie;
@@ -11,6 +10,7 @@ public class Pet {
     private int idade;
     private double peso;
     private List<Servico> servicos;
+    private List<ServicoAgendado> servicosAgendados;
 
     public Pet(String nome, String especie, String raca, int idade, double peso) {
         this.nome = nome;
@@ -19,9 +19,9 @@ public class Pet {
         this.idade = idade;
         this.peso = peso;
         this.servicos = new ArrayList<>();
+        this.servicosAgendados = new ArrayList<>();
     }
 
-    /* gets */
     public String getNome() {
         return nome;
     }
@@ -46,7 +46,10 @@ public class Pet {
         return servicos;
     }
 
-    /* sets */
+    public List<ServicoAgendado> getServicosAgendados() {
+        return servicosAgendados;
+    }
+
     public void setNome(String nome) {
         this.nome = nome;
     }
@@ -67,13 +70,20 @@ public class Pet {
         this.peso = peso;
     }
 
-    /* métodos */
     public void adicionarServico(Servico servico) {
         servicos.add(servico);
     }
 
     public boolean removerServico(Servico servico) {
         return servicos.remove(servico);
+    }
+
+    public void adicionarServicoAgendado(ServicoAgendado servicoAgendado) {
+        servicosAgendados.add(servicoAgendado);
+    }
+
+    public boolean removerServicoAgendado(ServicoAgendado servicoAgendado) {
+        return servicosAgendados.remove(servicoAgendado);
     }
 
     public Servico buscarServicoPorTipo(String tipoServico) {
@@ -85,11 +95,32 @@ public class Pet {
         return null;
     }
 
+    public ServicoAgendado buscarServicoAgendadoPorTipo(String tipo) {
+        for (ServicoAgendado sa : servicosAgendados) {
+            if (sa.getServico().getTipoServico().equalsIgnoreCase(tipo)) {
+                return sa;
+            }
+        }
+        return null;
+    }
+
+    public void listarServicosAgendados() {
+        if (servicosAgendados.isEmpty()) {
+            System.out.println("Nenhum serviço agendado.");
+        } else {
+            for (ServicoAgendado sa : servicosAgendados) {
+                System.out.print("  • ");
+                sa.exibirInformacoes();
+            }
+        }
+    }
+
     public void exibirInformacoes() {
         System.out.println("---- Pet ----");
         System.out.println("Nome: " + nome);
         System.out.println("Espécie: " + especie + " | Raça: " + raca);
         System.out.println("Idade: " + idade + " anos | Peso: " + peso + " kg");
+
         if (servicos.isEmpty()) {
             System.out.println("Nenhum serviço contratado.");
         } else {
@@ -99,10 +130,20 @@ public class Pet {
                 s.exibirInformacoes();
             }
         }
+
+        if (servicosAgendados.isEmpty()) {
+            System.out.println("Nenhum serviço agendado.");
+        } else {
+            System.out.println("Serviços agendados:");
+            for (ServicoAgendado sa : servicosAgendados) {
+                System.out.print("  • ");
+                sa.exibirInformacoes();
+            }
+        }
     }
 
     public String toString() {
         return String.format("Pet[nome=%s, especie=%s, raca=%s, idade=%d, peso=%.1f, qtdServicos=%d]",
-                             nome, especie, raca, idade, peso, servicos.size());
+                nome, especie, raca, idade, peso, servicos.size());
     }
 }
