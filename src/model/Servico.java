@@ -1,7 +1,6 @@
 package model;
 
-/* Classe que representa um serviço disponível no Pet Shop */
-public class Servico {
+public abstract class Servico {
     private String tipoServico;
     private double preco;
 
