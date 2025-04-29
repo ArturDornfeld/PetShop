@@ -11,6 +11,7 @@ public class Pet {
     private double peso;
     private List<Servico> servicos;
     private List<ServicoAgendado> servicosAgendados;
+    private List<PacoteServicos> pacotes;
 
     public Pet(String nome, String especie, String raca, int idade, double peso) {
         this.nome = nome;
@@ -20,6 +21,8 @@ public class Pet {
         this.peso = peso;
         this.servicos = new ArrayList<>();
         this.servicosAgendados = new ArrayList<>();
+        this.pacotes = new ArrayList<>();
+        
     }
 
     public String getNome() {
@@ -48,6 +51,10 @@ public class Pet {
 
     public List<ServicoAgendado> getServicosAgendados() {
         return servicosAgendados;
+    }
+
+    public List<PacoteServicos> getPacotes() {
+        return pacotes;
     }
 
     public void setNome(String nome) {
@@ -86,6 +93,20 @@ public class Pet {
         return servicosAgendados.remove(servicoAgendado);
     }
 
+    public void adicionarPacote(PacoteServicos pacote) {
+        pacotes.add(pacote);
+    }
+
+    public void listarPacotes() {
+        if (pacotes.isEmpty()) {
+            System.out.println("Nenhum pacote cadastrado.");
+        } else {
+            for (PacoteServicos p : pacotes) {
+                p.exibirPacote();
+            }
+        }
+    }
+
     public Servico buscarServicoPorTipo(String tipoServico) {
         for (Servico s : servicos) {
             if (s.getTipoServico().equalsIgnoreCase(tipoServico)) {
@@ -103,7 +124,7 @@ public class Pet {
         }
         return null;
     }
-
+    
     public void listarServicosAgendados() {
         if (servicosAgendados.isEmpty()) {
             System.out.println("Nenhum serviço agendado.");
@@ -139,6 +160,13 @@ public class Pet {
                 System.out.print("  • ");
                 sa.exibirInformacoes();
             }
+        }
+
+        if (pacotes.isEmpty()) {
+            System.out.println("Nenhum pacote de serviços.");
+        } else {
+            System.out.println("Pacotes de serviços:");
+            listarPacotes();
         }
     }
 

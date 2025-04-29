@@ -12,19 +12,37 @@ public class Main {
         PetShop petShop = new PetShop();
 
         while (true) {
-        	System.out.println("\n--- Menu Pet Shop ---");
+        	System.out.println("\n=== Menu Pet Shop ===");
+
+        	// Seção: Clientes
+        	System.out.println("\n--- CLIENTES ---");
         	System.out.println("1. Cadastrar cliente");
         	System.out.println("2. Listar clientes");
         	System.out.println("3. Buscar cliente");
         	System.out.println("4. Remover cliente");
+
+        	// Seção: Pets
+        	System.out.println("\n--- PETS ---");
         	System.out.println("5. Adicionar pet a cliente");
         	System.out.println("6. Listar pets de um cliente");
         	System.out.println("7. Remover pet de um cliente");
+
+        	// Seção: Serviços
+        	System.out.println("\n--- SERVIÇOS ---");
         	System.out.println("8. Agendar serviço para pet");
         	System.out.println("9. Listar serviços agendados de um pet");
         	System.out.println("10. Editar serviço agendado de um pet");
-        	System.out.println("0. Sair");
-        	System.out.print("Escolha: ");
+
+        	// Seção: Pacotes
+        	System.out.println("\n--- PACOTES ---");
+        	System.out.println("11. Criar pacote de serviços para um pet");
+        	System.out.println("12. Listar pacotes de um pet");
+
+        	// Saída
+        	System.out.println("\n0. Sair");
+
+        	System.out.print("\nEscolha uma opção: ");
+        	
             int opcao = sc.nextInt();
             sc.nextLine();
 
@@ -207,7 +225,75 @@ public class Main {
                     }
                 }
 
+                case 11 -> {
+                    System.out.print("Nome do cliente: ");
+                    String nome = sc.nextLine();
+                    Cliente cliente = petShop.buscarClientePorNome(nome);
+                    if (cliente != null) {
+                        System.out.print("Nome do pet: ");
+                        String nomePet = sc.nextLine();
+                        Pet pet = cliente.buscarPetPorNome(nomePet);
+                        if (pet != null) {
+                            System.out.print("Desconto do pacote (ex: 0.10 para 10%): ");
+                            double desconto = sc.nextDouble();
+                            sc.nextLine();
+                            PacoteServicos pacote = new PacoteServicos(desconto);
 
+                            while (true) {
+                                System.out.println("Adicionar serviço ao pacote:");
+                                System.out.println("1 - Banho e Tosa");
+                                System.out.println("2 - Consulta Veterinária");
+                                System.out.println("3 - Hospedagem");
+                                System.out.println("4 - Adestramento");
+                                System.out.println("0 - Finalizar pacote");
+                                System.out.print("Escolha: ");
+                                int opc = sc.nextInt();
+                                if (opc == 0) break;
+                                System.out.print("Preço do serviço: ");
+                                double preco = sc.nextDouble();
+                                sc.nextLine();
+                                Servico servico = switch (opc) {
+                                    case 1 -> new BanhoETosa(preco);
+                                    case 2 -> new ConsultaVeterinaria(preco);
+                                    case 3 -> new Hospedagem(preco);
+                                    case 4 -> new Adestramento(preco);
+                                    default -> null;
+                                };
+                                if (servico != null) {
+                                    pacote.adicionarServico(servico);
+                                    System.out.println("Serviço adicionado.");
+                                } else {
+                                    System.out.println("Opção inválida.");
+                                }
+                            }
+
+                            pet.adicionarPacote(pacote);
+                            System.out.println("Pacote adicionado ao pet.");
+                        } else {
+                            System.out.println("Pet não encontrado.");
+                        }
+                    } else {
+                        System.out.println("Cliente não encontrado.");
+                    }
+                }
+
+                case 12 -> {
+                    System.out.print("Nome do cliente: ");
+                    String nome = sc.nextLine();
+                    Cliente cliente = petShop.buscarClientePorNome(nome);
+                    if (cliente != null) {
+                        System.out.print("Nome do pet: ");
+                        String nomePet = sc.nextLine();
+                        Pet pet = cliente.buscarPetPorNome(nomePet);
+                        if (pet != null) {
+                            pet.listarPacotes();
+                        } else {
+                            System.out.println("Pet não encontrado.");
+                        }
+                    } else {
+                        System.out.println("Cliente não encontrado.");
+                    }
+                }
 
                 case 0 -> {
                     System.out.println("Sistema encerrado.");
