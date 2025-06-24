@@ -10,7 +10,7 @@ Projeto Java com interface Swing para um sistema de gerenciamento de Pet Shop. P
 * Cadastro de Pet com vinculação ao Cliente
 * Contratação de Serviços pré-definidos (Banho, Tosa, Consulta)
 * Listagem geral de Clientes, Pets e Serviços
-* Exclusão de Clientes, Pets e Serviços (em andamento)
+* Exclusão de Clientes, Pets e Serviços 
 * Interface gráfica com Java Swing
 * Armazenamento de dados em arquivos `.txt`
 
