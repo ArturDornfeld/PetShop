@@ -14,15 +14,14 @@ public class TelaPrincipal extends JFrame {
     private PetController petController;
     private ServicoController servicoController;
 
-    public TelaPrincipal() {
+    public TelaPrincipal(ClienteController clienteController, PetController petController, ServicoController servicoController) {
         super("Sistema Pet Shop");
 
-        // Inicializa os controladores
-        clienteController = new ClienteController();
-        petController = new PetController();
-        servicoController = new ServicoController();
+        this.clienteController = clienteController;
+        this.petController = petController;
+        this.servicoController = servicoController;
 
-        setSize(400, 350);
+        setSize(400, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -30,32 +29,19 @@ public class TelaPrincipal extends JFrame {
         painel.setLayout(new GridLayout(5, 1, 10, 10));
         painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
+        // Botões
         JButton btnCliente = new JButton("Cadastrar Cliente");
         JButton btnPet = new JButton("Cadastrar Pet");
-        JButton btnServico = new JButton("Contratar Serviço");
-        JButton btnListar = new JButton("Listar Clientes e Pets");
+        JButton btnServico = new JButton("Cadastrar Serviço");
+        JButton btnListar = new JButton("Listar Tudo");
         JButton btnSair = new JButton("Sair");
 
-        // Ações dos botões
-        btnCliente.addActionListener((ActionEvent e) -> {
-            new TelaCadastroCliente(clienteController);
-        });
-
-        btnPet.addActionListener((ActionEvent e) -> {
-            new TelaCadastroPet(clienteController, petController);
-        });
-
-        btnServico.addActionListener((ActionEvent e) -> {
-            new TelaServico(clienteController, servicoController);
-        });
-
-        btnListar.addActionListener((ActionEvent e) -> {
-            new TelaListagem(clienteController, petController);
-        });
-
-        btnSair.addActionListener((ActionEvent e) -> {
-            System.exit(0);
-        });
+        // Ações
+        btnCliente.addActionListener((ActionEvent e) -> new TelaCadastroCliente(clienteController));
+        btnPet.addActionListener((ActionEvent e) -> new TelaCadastroPet(clienteController, petController));
+        btnServico.addActionListener((ActionEvent e) -> new TelaCadastroServico(clienteController, petController, servicoController));
+        btnListar.addActionListener((ActionEvent e) -> new TelaListagem(clienteController, petController, servicoController));
+        btnSair.addActionListener((ActionEvent e) -> System.exit(0));
 
         painel.add(btnCliente);
         painel.add(btnPet);
@@ -65,9 +51,5 @@ public class TelaPrincipal extends JFrame {
 
         add(painel);
         setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        new TelaPrincipal();
     }
 }
