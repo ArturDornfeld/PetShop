@@ -1,13 +1,11 @@
 package model;
 
 public class Pet {
-    // Atributos
     private String nome;
     private String especie;
     private String raca;
     private Cliente dono;
 
-    // Construtor
     public Pet(String nome, String especie, String raca, Cliente dono) {
         this.nome = nome;
         this.especie = especie;
@@ -15,7 +13,6 @@ public class Pet {
         this.dono = dono;
     }
 
-    // Getters e Setters
     public String getNome() {
         return nome;
     }
@@ -48,14 +45,13 @@ public class Pet {
         this.dono = dono;
     }
 
-    // Representação do objeto como string
     @Override
     public String toString() {
         return "Pet{" +
-               "nome='" + nome + '\'' +
-               ", especie='" + especie + '\'' +
-               ", raca='" + raca + '\'' +
-               ", dono='" + dono.getNome() + '\'' +
-               '}';
+                "nome='" + nome + '\'' +
+                ", especie='" + especie + '\'' +
+                ", raca='" + raca + '\'' +
+                ", dono='" + dono.getNome() + '\'' +
+                '}';
     }
 }
