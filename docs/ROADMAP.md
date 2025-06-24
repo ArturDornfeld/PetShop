@@ -1,4 +1,4 @@
-	# 🗺️ Roadmap do Projeto Pet Shop
+# 🗺️ Roadmap do Projeto Pet Shop
 
 Este roadmap descreve as etapas do desenvolvimento do sistema de gerenciamento para Pet Shop com Java Swing.
 
@@ -8,26 +8,28 @@ Este roadmap descreve as etapas do desenvolvimento do sistema de gerenciamento p
 - [x] Criar repositório no GitHub
 - [x] Configurar Git local
 - [x] Criar estrutura de pastas do projeto
-- [ ] Criar README com instruções iniciais e descrição
+- [x] Criar README com instruções iniciais e descrição
 
 ---
 
 ## 🛠️ Etapa 2 – Implementação das Funcionalidades
 
 ### 2.1 Cadastro de Clientes
-- [ ] Criar classe `Cliente`
+- [x] Criar classe `Cliente`
 - [ ] Criar tela de cadastro com Swing
 - [ ] Implementar validação: nome, telefone (formato), e-mail (formato)
 - [ ] Implementar ações: cadastrar, listar, buscar, excluir
 
 ### 2.2 Cadastro de Pets
-- [ ] Criar classe `Pet` (ligada ao cliente)
+- [x] Criar classe `Pet` (ligada ao cliente)
 - [ ] Criar tela de cadastro de pet
 - [ ] Validação: idade > 0, peso > 0
 - [ ] Ações: cadastrar, listar, buscar, excluir
 
 ### 2.3 Serviços
-- [ ] Criar classe `Servico` e `Pacote`
+- [x] Criar classe `Servico`
+- [x] Criar classe `Agendamento`
+- [x] Criar classe `Pagamento`
 - [ ] Tela de contratação de serviços
 - [ ] Validar data (somente futuras)
 - [ ] Garantir que só pets do cliente sejam usados
@@ -66,4 +68,3 @@ Este roadmap descreve as etapas do desenvolvimento do sistema de gerenciamento p
 
 ## 👥 Equipe
 - Artur Dornfeld
-	
