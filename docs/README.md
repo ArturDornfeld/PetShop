@@ -17,19 +17,23 @@ Projeto Java de um sistema básico de gerenciamento para Pet Shop, com foco em o
 ## 📁 Estrutura do Projeto
 
 PetShop/
-├── docs/
-│ ├── README.md ← Este arquivo
-│ └── ROADMAP.md ← Planejamento e etapas do projeto
-├── src/
-│ ├── model/
-│ │ ├── Cliente.java
-│ │ ├── Pet.java
-│ │ ├── Servico.java
-│ │ ├── Agendamento.java
-│ │ └── Pagamento.java
-│ └── test/
-│ └── TesteSistema.java
-└── .gitignore
+├── 📁 docs/
+│   ├── 📄 README.md        ← Este arquivo
+│   └── 📄 ROADMAP.md       ← Planejamento e etapas do projeto
+│
+├── 📁 src/
+│   └── 📁 model/
+│       ├── 📄 Cliente.java
+│       ├── 📄 Pet.java
+│       ├── 📄 Servico.java
+│       ├── 📄 Agendamento.java
+│       └── 📄 Pagamento.java
+│
+├── 📁 test/
+│   └── 📄 TesteSistema.java
+│
+├── 📄 .gitignore
+└── 📄 module-info.java
 
 ## 🚀 Como Executar
 
