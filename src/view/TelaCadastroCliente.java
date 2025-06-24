@@ -1,80 +1,47 @@
 package view;
 
 import controller.ClienteController;
-
 import javax.swing.*;
 import java.awt.*;
 
 public class TelaCadastroCliente extends JFrame {
+    private ClienteController clienteController;
 
-    private JTextField campoNome;
-    private JTextField campoCpf;
-    private JTextField campoTelefone;
-    private JTextField campoEmail;
-    private JTextArea areaMensagens;
-    private ClienteController controller;
-
-    public TelaCadastroCliente() {
+    public TelaCadastroCliente(ClienteController clienteController) {
         super("Cadastro de Cliente");
-        controller = new ClienteController();
+        this.clienteController = clienteController;
 
-        setLayout(new BorderLayout());
+        setSize(350, 250);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel painelFormulario = new JPanel(new GridLayout(5, 2));
+        JPanel painel = new JPanel(new GridLayout(5, 2, 10, 10));
+        painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        painelFormulario.add(new JLabel("Nome:"));
-        campoNome = new JTextField();
-        painelFormulario.add(campoNome);
+        JTextField txtNome = new JTextField();
+        JTextField txtCPF = new JTextField();
+        JTextField txtTelefone = new JTextField();
+        JTextField txtEmail = new JTextField();
 
-        painelFormulario.add(new JLabel("CPF:"));
-        campoCpf = new JTextField();
-        painelFormulario.add(campoCpf);
+        painel.add(new JLabel("Nome:"));
+        painel.add(txtNome);
+        painel.add(new JLabel("CPF:"));
+        painel.add(txtCPF);
+        painel.add(new JLabel("Telefone:"));
+        painel.add(txtTelefone);
+        painel.add(new JLabel("Email:"));
+        painel.add(txtEmail);
 
-        painelFormulario.add(new JLabel("Telefone:"));
-        campoTelefone = new JTextField();
-        painelFormulario.add(campoTelefone);
+        JButton btnSalvar = new JButton("Cadastrar");
+        btnSalvar.addActionListener(e -> {
+            String msg = clienteController.cadastrarCliente(
+                txtNome.getText(), txtTelefone.getText(), txtEmail.getText(), txtCPF.getText()
+            );
+            JOptionPane.showMessageDialog(this, msg);
+        });
 
-        painelFormulario.add(new JLabel("Email:"));
-        campoEmail = new JTextField();
-        painelFormulario.add(campoEmail);
-
-        JButton botaoCadastrar = new JButton("Cadastrar");
-        botaoCadastrar.addActionListener(e -> cadastrarCliente());
-        painelFormulario.add(botaoCadastrar);
-
-        JButton botaoListar = new JButton("Listar Clientes");
-        botaoListar.addActionListener(e -> listarClientes());
-        painelFormulario.add(botaoListar);
-
-        add(painelFormulario, BorderLayout.NORTH);
-
-        areaMensagens = new JTextArea(10, 30);
-        areaMensagens.setEditable(false);
-        add(new JScrollPane(areaMensagens), BorderLayout.CENTER);
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        pack();
+        painel.add(btnSalvar);
+        add(painel);
         setVisible(true);
-    }
-
-    private void cadastrarCliente() {
-        String nome = campoNome.getText();
-        String cpf = campoCpf.getText();
-        String telefone = campoTelefone.getText();
-        String email = campoEmail.getText();
-
-        String mensagem = controller.cadastrarCliente(nome, cpf, telefone, email);
-        areaMensagens.append(mensagem + "\n");
-    }
-
-    private void listarClientes() {
-        areaMensagens.append("--- Lista de Clientes ---\n");
-        for (var cliente : controller.listarClientes()) {
-            areaMensagens.append(cliente.toString() + "\n");
-        }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(TelaCadastroCliente::new);
     }
 }

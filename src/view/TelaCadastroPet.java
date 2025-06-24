@@ -1,92 +1,62 @@
 package view;
 
+import controller.ClienteController;
 import controller.PetController;
 import model.Cliente;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class TelaCadastroPet extends JFrame {
-    private JTextField campoNome, campoEspecie, campoRaca;
-    private JTextField campoDono; // Nome do dono (simulação)
-    private JTextArea resultado;
+    private ClienteController clienteController;
     private PetController petController;
 
-    public TelaCadastroPet() {
+    public TelaCadastroPet(ClienteController clienteController, PetController petController) {
         super("Cadastro de Pet");
+        this.clienteController = clienteController;
+        this.petController = petController;
 
-        petController = new PetController();
-
-        setLayout(new BorderLayout());
-
-        // Painel de formulário
-        JPanel formulario = new JPanel(new GridLayout(5, 2));
-
-        formulario.add(new JLabel("Nome:"));
-        campoNome = new JTextField();
-        formulario.add(campoNome);
-
-        formulario.add(new JLabel("Espécie:"));
-        campoEspecie = new JTextField();
-        formulario.add(campoEspecie);
-
-        formulario.add(new JLabel("Raça:"));
-        campoRaca = new JTextField();
-        formulario.add(campoRaca);
-
-        formulario.add(new JLabel("Nome do Dono:"));
-        campoDono = new JTextField();
-        formulario.add(campoDono);
-
-        // Botão Cadastrar
-        JButton botaoCadastrar = new JButton("Cadastrar");
-        botaoCadastrar.addActionListener(e -> cadastrarPet());
-        formulario.add(botaoCadastrar);
-
-        // Botão Limpar
-        JButton botaoLimpar = new JButton("Limpar");
-        botaoLimpar.addActionListener(e -> limparCampos());
-        formulario.add(botaoLimpar);
-
-        add(formulario, BorderLayout.NORTH);
-
-        resultado = new JTextArea(10, 30);
-        resultado.setEditable(false);
-        add(new JScrollPane(resultado), BorderLayout.CENTER);
-
+        setSize(350, 250);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        pack();
-        setVisible(true);
-    }
 
-    private void cadastrarPet() {
-        String nome = campoNome.getText();
-        String especie = campoEspecie.getText();
-        String raca = campoRaca.getText();
-        String nomeDono = campoDono.getText();
+        JPanel painel = new JPanel(new GridLayout(4, 2, 10, 10));
+        painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Cliente fictício (simulação)
-        Cliente clienteFicticio = new Cliente(nomeDono, "00000000000", nomeDono + "@email.com", "11999999999");
+        JTextField txtNome = new JTextField();
+        JTextField txtEspecie = new JTextField();
+        JTextField txtRaca = new JTextField();
+        JComboBox<String> cbClientes = new JComboBox<>();
 
-        String msg = petController.cadastrarPet(nome, especie, raca, clienteFicticio);
-        resultado.setText(msg + "\n");
-
-        if (msg.equals("Pet cadastrado com sucesso.")) {
-            for (var pet : petController.listarPets()) {
-                resultado.append(pet.toString() + "\n");
-            }
+        List<Cliente> clientes = clienteController.listarClientes();
+        for (Cliente c : clientes) {
+            cbClientes.addItem(c.getCpf() + " - " + c.getNome());
         }
-    }
 
-    private void limparCampos() {
-        campoNome.setText("");
-        campoEspecie.setText("");
-        campoRaca.setText("");
-        campoDono.setText("");
-        resultado.setText("");
-    }
+        painel.add(new JLabel("Nome do Pet:"));
+        painel.add(txtNome);
+        painel.add(new JLabel("Espécie:"));
+        painel.add(txtEspecie);
+        painel.add(new JLabel("Raça:"));
+        painel.add(txtRaca);
+        painel.add(new JLabel("Dono:"));
+        painel.add(cbClientes);
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(TelaCadastroPet::new);
+        JButton btnSalvar = new JButton("Cadastrar");
+        btnSalvar.addActionListener(e -> {
+            int selectedIndex = cbClientes.getSelectedIndex();
+            if (selectedIndex >= 0) {
+                Cliente dono = clientes.get(selectedIndex);
+                String msg = petController.cadastrarPet(txtNome.getText(), txtEspecie.getText(), txtRaca.getText(), dono);
+                JOptionPane.showMessageDialog(this, msg);
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecione um dono para o pet.");
+            }
+        });
+
+        add(painel, BorderLayout.CENTER);
+        add(btnSalvar, BorderLayout.SOUTH);
+        setVisible(true);
     }
 }
