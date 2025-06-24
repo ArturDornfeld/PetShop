@@ -83,7 +83,7 @@ GitHub: [@ArturDornfeld](https://github.com/ArturDornfeld)
 ## 📊 Roadmap
 
 ### Funcionalidades concluídas:
-
+```
 * [x] Cadastro de cliente e pet com associação
 * [x] Contratação de serviços pré-definidos
 * [x] Interface gráfica completa com Swing
@@ -92,5 +92,5 @@ GitHub: [@ArturDornfeld](https://github.com/ArturDornfeld)
 * [x] Exclusão de cliente
 * [x] Exclusão de pet
 * [x] Exclusão de serviço
-
+```
 ---
