@@ -17,7 +17,7 @@ Projeto Java de um sistema básico de gerenciamento para Pet Shop, com foco em o
 📁 **Estrutura do Projeto**
 
 
-
+``` 
 PetShop/
 ├── docs/
 │ ├── README.md ← Este arquivo
@@ -33,7 +33,7 @@ PetShop/
 │ └── TesteSistema.java
 ├── .gitignore
 └── module-info.java
-
+``` 
 ## 🚀 Como Executar
 
 1. Clonar o repositório:
