@@ -5,6 +5,7 @@ import controller.PetController;
 import controller.ServicoController;
 import model.Cliente;
 import model.Pet;
+import model.Servico;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,50 +20,44 @@ public class TelaCadastroServico extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel painel = new JPanel(new GridLayout(5, 2, 10, 10));
+        JPanel painel = new JPanel(new GridLayout(6, 2, 10, 10));
         painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // ComboBox para selecionar cliente
         JComboBox<String> comboClientes = new JComboBox<>();
         List<Cliente> clientes = clienteController.listarClientes();
         for (Cliente c : clientes) {
             comboClientes.addItem(c.getCpf() + " - " + c.getNome());
         }
 
-        // ComboBox para selecionar pet (será atualizado ao trocar cliente)
         JComboBox<String> comboPets = new JComboBox<>();
-
-        // ComboBox com serviços fixos
-        String[] opcoesServicos = {
+        JComboBox<String> comboServicos = new JComboBox<>(new String[]{
             "Banho - Banho completo com shampoo especial - 49.90",
             "Tosa - Tosa higiênica e penteado - 59.90",
             "Consulta - Avaliação clínica com veterinário - 99.90"
-        };
-        JComboBox<String> comboServicos = new JComboBox<>(opcoesServicos);
+        });
 
-        // Atualiza pets quando cliente for selecionado
         comboClientes.addActionListener(e -> {
             comboPets.removeAllItems();
             int index = comboClientes.getSelectedIndex();
             if (index >= 0) {
                 Cliente cliente = clientes.get(index);
-                List<Pet> petsDoCliente = petController.listarPetsPorDono(cliente, clientes);
+                List<Pet> petsDoCliente = petController.listarPets(cliente.getCpf());
                 for (Pet p : petsDoCliente) {
                     comboPets.addItem(p.getNome());
                 }
             }
         });
 
-        // Inicializa comboPets com os primeiros pets
         if (!clientes.isEmpty()) {
             Cliente clienteInicial = clientes.get(0);
-            List<Pet> petsIniciais = petController.listarPetsPorDono(clienteInicial, clientes);
+            List<Pet> petsIniciais = petController.listarPets(clienteInicial.getCpf());
             for (Pet p : petsIniciais) {
                 comboPets.addItem(p.getNome());
             }
         }
 
         JButton btnContratar = new JButton("Contratar Serviço");
+        JButton btnCancelar = new JButton("Cancelar Serviço");
 
         btnContratar.addActionListener(e -> {
             int clienteIndex = comboClientes.getSelectedIndex();
@@ -74,16 +69,39 @@ public class TelaCadastroServico extends JFrame {
                 return;
             }
 
-            Cliente clienteSelecionado = clientes.get(clienteIndex);
-            Pet petSelecionado = petController.listarPetsPorDono(clienteSelecionado, clientes).get(petIndex);
+            Cliente cliente = clientes.get(clienteIndex);
+            Pet pet = petController.listarPets(cliente.getCpf()).get(petIndex);
 
-            String[] dadosServico = opcoesServicos[servicoIndex].split(" - ");
-            String nome = dadosServico[0];
-            String descricao = dadosServico[1];
-            double preco = Double.parseDouble(dadosServico[2]);
+            String[] dados = comboServicos.getItemAt(servicoIndex).split(" - ");
+            String nome = dados[0];
+            String descricao = dados[1];
+            double preco = Double.parseDouble(dados[2]);
 
-            String resultado = servicoController.cadastrarServico(nome, descricao, preco, clienteSelecionado, petSelecionado);
-            JOptionPane.showMessageDialog(this, resultado);
+            Servico servico = new Servico(nome, descricao, preco, cliente, pet);
+            servicoController.contratarServico(servico);
+
+            JOptionPane.showMessageDialog(this, "Serviço contratado com sucesso!");
+        });
+
+        btnCancelar.addActionListener(e -> {
+            int clienteIndex = comboClientes.getSelectedIndex();
+            int petIndex = comboPets.getSelectedIndex();
+            int servicoIndex = comboServicos.getSelectedIndex();
+
+            if (clienteIndex == -1 || petIndex == -1 || servicoIndex == -1) {
+                JOptionPane.showMessageDialog(this, "Preencha todos os campos.");
+                return;
+            }
+
+            Cliente cliente = clientes.get(clienteIndex);
+            Pet pet = petController.listarPets(cliente.getCpf()).get(petIndex);
+            String nomeServico = comboServicos.getItemAt(servicoIndex).split(" - ")[0];
+
+            if (servicoController.cancelarServico(cliente.getCpf(), pet.getNome(), nomeServico)) {
+                JOptionPane.showMessageDialog(this, "Serviço cancelado com sucesso!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Serviço não encontrado.");
+            }
         });
 
         painel.add(new JLabel("Cliente:"));
@@ -92,8 +110,8 @@ public class TelaCadastroServico extends JFrame {
         painel.add(comboPets);
         painel.add(new JLabel("Serviço:"));
         painel.add(comboServicos);
-        painel.add(new JLabel(""));
         painel.add(btnContratar);
+        painel.add(btnCancelar);
 
         add(painel);
         setVisible(true);

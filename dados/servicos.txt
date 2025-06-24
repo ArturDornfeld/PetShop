@@ -1,2 +1,1 @@
-Tosa;asdas;1212.0
-Tosa;Tosa higiênica e penteado;59.9;12345678900;sadsad
+Banho;Banho completo com shampoo especial;49.9;12345678900;milk

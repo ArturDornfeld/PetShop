@@ -1,51 +1,75 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import model.Cliente;
 import model.Pet;
 import model.Servico;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import util.ArquivoUtil;
 
 public class ServicoController {
+    private List<Servico> listaServicos;
+    private final String CAMINHO_ARQUIVO = "dados/servicos.txt";
 
-    private static final String ARQUIVO_SERVICOS = "dados/servicos.txt";
-    private List<Servico> listaServicos = new ArrayList<>();
+    private ClienteController clienteController;
+    private PetController petController;
 
-    public String cadastrarServico(String nome, String descricao, double preco, Cliente cliente, Pet pet) {
-        Servico servico = new Servico(nome, descricao, preco, cliente, pet);
-        listaServicos.add(servico);
-        salvarEmArquivo(servico);
-        return "Serviço cadastrado com sucesso.";
+    public ServicoController(ClienteController clienteController, PetController petController) {
+        this.clienteController = clienteController;
+        this.petController = petController;
+        listaServicos = new ArrayList<>();
+        carregarServicos();
     }
 
-    public List<Servico> listarServicos(List<Cliente> clientes, List<Pet> pets) {
-        List<Servico> servicos = new ArrayList<>();
-        File arquivo = new File(ARQUIVO_SERVICOS);
-        if (!arquivo.exists()) return servicos;
+    public void contratarServico(Servico servico) {
+        listaServicos.add(servico);
+        salvarServicos();
+    }
 
-        try (BufferedReader br = new BufferedReader(new FileReader(arquivo))) {
-            String linha;
-            while ((linha = br.readLine()) != null) {
-                Servico servico = Servico.fromLinhaArquivo(linha, clientes, pets);
-                if (servico != null) {
-                    servicos.add(servico);
-                }
+    public List<Servico> listarServicos() {
+        return listaServicos;
+    }
+
+    public boolean cancelarServico(String cpfCliente, String nomePet, String nomeServico) {
+        Iterator<Servico> iterator = listaServicos.iterator();
+        while (iterator.hasNext()) {
+            Servico servico = iterator.next();
+            if (servico.getCliente().getCpf().equalsIgnoreCase(cpfCliente) &&
+                servico.getPet().getNome().equalsIgnoreCase(nomePet) &&
+                servico.getNome().equalsIgnoreCase(nomeServico)) {
+                iterator.remove();
+                salvarServicos();
+                return true;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void salvarServicos() {
+        List<String> linhas = new ArrayList<>();
+        for (Servico servico : listaServicos) {
+            linhas.add(servico.toLinhaArquivo());
+        }
+        ArquivoUtil.escreverLinhas(CAMINHO_ARQUIVO, linhas);
+    }
+
+    public void carregarServicos() {
+        listaServicos.clear();
+        List<String> linhas = ArquivoUtil.lerLinhas(CAMINHO_ARQUIVO);
+
+        List<Cliente> clientes = clienteController.listarClientes();
+        List<Pet> pets = new ArrayList<>();
+        for (Cliente c : clientes) {
+            pets.addAll(c.getPets());
         }
 
-        return servicos;
-    }
-
-    private void salvarEmArquivo(Servico servico) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(ARQUIVO_SERVICOS, true))) {
-            bw.write(servico.toLinhaArquivo());
-            bw.newLine();
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (String linha : linhas) {
+            Servico servico = Servico.fromLinhaArquivo(linha, clientes, pets);
+            if (servico != null) {
+                listaServicos.add(servico);
+            }
         }
     }
 }

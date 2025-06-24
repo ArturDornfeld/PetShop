@@ -3,6 +3,7 @@ package view;
 import controller.ClienteController;
 import controller.PetController;
 import model.Cliente;
+import model.Pet;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +18,7 @@ public class TelaCadastroPet extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel painel = new JPanel(new GridLayout(5, 2, 10, 10));
+        JPanel painel = new JPanel(new GridLayout(6, 2, 10, 10));
         painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JTextField campoNomePet = new JTextField();
@@ -41,8 +42,11 @@ public class TelaCadastroPet extends JFrame {
 
         JButton btnCadastrar = new JButton("Cadastrar");
         JButton btnLimpar = new JButton("Limpar");
+        JButton btnExcluir = new JButton("Excluir Pet");
+
         painel.add(btnCadastrar);
         painel.add(btnLimpar);
+        painel.add(btnExcluir);
 
         btnCadastrar.addActionListener(e -> {
             if (clientes.isEmpty()) {
@@ -56,20 +60,32 @@ public class TelaCadastroPet extends JFrame {
             int index = comboClientes.getSelectedIndex();
             Cliente dono = clientes.get(index);
 
-            String resultado = petController.cadastrarPet(nomePet, especie, raca, dono);
-            JOptionPane.showMessageDialog(this, resultado);
+            Pet pet = new Pet(nomePet, especie, raca, dono);
+            petController.cadastrarPet(dono.getCpf(), pet);
 
-            if (resultado.equals("Pet cadastrado com sucesso.")) {
-                campoNomePet.setText("");
-                campoEspecie.setText("");
-                campoRaca.setText("");
-            }
+            JOptionPane.showMessageDialog(this, "Pet cadastrado com sucesso!");
+
+            campoNomePet.setText("");
+            campoEspecie.setText("");
+            campoRaca.setText("");
         });
 
         btnLimpar.addActionListener(e -> {
             campoNomePet.setText("");
             campoEspecie.setText("");
             campoRaca.setText("");
+        });
+
+        btnExcluir.addActionListener(e -> {
+            int index = comboClientes.getSelectedIndex();
+            Cliente dono = clientes.get(index);
+            String nomePet = campoNomePet.getText();
+
+            if (petController.excluirPet(dono.getCpf(), nomePet)) {
+                JOptionPane.showMessageDialog(this, "Pet excluído com sucesso!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Pet não encontrado.");
+            }
         });
 
         add(painel);

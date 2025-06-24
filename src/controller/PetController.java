@@ -1,50 +1,49 @@
 package controller;
 
-import model.Cliente;
-import model.Pet;
-
-import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import model.Cliente;
+import model.Pet;
+import util.ArquivoUtil;
+
 public class PetController {
+    private ClienteController clienteController;
 
-    private final String caminho = "dados/pets.txt";
+    public PetController(ClienteController clienteController) {
+        this.clienteController = clienteController;
+    }
 
-    public String cadastrarPet(String nome, String especie, String raca, Cliente dono) {
-        Pet pet = new Pet(nome, especie, raca, dono);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminho, true))) {
-            writer.write(pet.toLinhaArquivo());
-            writer.newLine();
-            return "Pet cadastrado com sucesso!";
-        } catch (IOException e) {
-            return "Erro ao salvar pet.";
+    public void cadastrarPet(String cpfCliente, Pet pet) {
+        Cliente cliente = clienteController.buscarClientePorCpf(cpfCliente);
+        if (cliente != null) {
+            cliente.getPets().add(pet);
+            clienteController.salvarClientes();
         }
     }
 
-    public List<Pet> listarPets(List<Cliente> clientes) {
-        List<Pet> pets = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(caminho))) {
-            String linha;
-            while ((linha = reader.readLine()) != null) {
-                Pet pet = Pet.fromLinhaArquivo(linha, clientes);
-                if (pet != null) pets.add(pet);
-            }
-        } catch (IOException e) {
-            System.out.println("Erro ao ler o arquivo de pets.");
+    public List<Pet> listarPets(String cpfCliente) {
+        Cliente cliente = clienteController.buscarClientePorCpf(cpfCliente);
+        if (cliente != null) {
+            return cliente.getPets();
         }
-
-        return pets;
+        return new ArrayList<>();
     }
 
-    public List<Pet> listarPetsPorDono(Cliente dono, List<Cliente> clientes) {
-        List<Pet> resultado = new ArrayList<>();
-        for (Pet p : listarPets(clientes)) {
-            if (p != null && p.getDono() != null && p.getDono().getCpf().equals(dono.getCpf())) {
-                resultado.add(p);
+    public boolean excluirPet(String cpfCliente, String nomePet) {
+        Cliente cliente = clienteController.buscarClientePorCpf(cpfCliente);
+        if (cliente != null) {
+            Iterator<Pet> iterator = cliente.getPets().iterator();
+            while (iterator.hasNext()) {
+                Pet pet = iterator.next();
+                if (pet.getNome().equalsIgnoreCase(nomePet)) {
+                    iterator.remove();
+                    clienteController.salvarClientes();
+                    return true;
+                }
             }
         }
-        return resultado;
+        return false;
     }
 }

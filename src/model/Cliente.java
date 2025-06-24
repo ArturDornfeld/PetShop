@@ -8,17 +8,20 @@ public class Cliente {
     private String telefone;
     private String email;
     private String cpf;
-    private List<Pet> pets; // Lista de pets do cliente
+    private List<Pet> pets;
 
     public Cliente(String nome, String telefone, String email, String cpf) {
         this.nome = nome;
         this.telefone = telefone;
         this.email = email;
         this.cpf = cpf;
-        this.pets = new ArrayList<>(); // Inicializa a lista
+        this.pets = new ArrayList<>();
     }
 
-    // Getters e Setters
+    public Cliente() {
+        this.pets = new ArrayList<>();
+    }
+
     public String getNome() {
         return nome;
     }
@@ -51,7 +54,6 @@ public class Cliente {
         this.cpf = cpf;
     }
 
-    // Métodos para manipular os pets
     public List<Pet> getPets() {
         return pets;
     }
@@ -63,5 +65,24 @@ public class Cliente {
     @Override
     public String toString() {
         return nome + " - CPF: " + cpf;
+    }
+
+    // ➕ NOVO: para salvar no arquivo
+    public String toLinhaArquivo() {
+        return nome + ";" + cpf + ";" + telefone + ";" + email;
+    }
+
+    // ➕ NOVO: para carregar do arquivo
+    public static Cliente fromLinhaArquivo(String linha) {
+        String[] partes = linha.split(";");
+        if (partes.length >= 4) {
+            Cliente cliente = new Cliente();
+            cliente.setNome(partes[0]);
+            cliente.setCpf(partes[1]);
+            cliente.setTelefone(partes[2]);
+            cliente.setEmail(partes[3]);
+            return cliente;
+        }
+        return null;
     }
 }

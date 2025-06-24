@@ -49,4 +49,14 @@ public class ArquivoUtil {
             e.printStackTrace();
         }
     }
+
+    // ➕ NOVO: método usado pelo ClienteController
+    public static List<String> lerLinhas(String caminho) {
+        return ler(caminho);
+    }
+
+    // ➕ NOVO: método para sobrescrever usando lista de strings
+    public static void escreverLinhas(String caminho, List<String> linhas) {
+        sobrescrever(caminho, linhas);
+    }
 }

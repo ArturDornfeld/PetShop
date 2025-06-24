@@ -8,8 +8,8 @@ import view.TelaPrincipal;
 public class Main {
     public static void main(String[] args) {
         ClienteController clienteController = new ClienteController();
-        PetController petController = new PetController();
-        ServicoController servicoController = new ServicoController();
+        PetController petController = new PetController(clienteController);
+        ServicoController servicoController = new ServicoController(clienteController, petController);
 
         new TelaPrincipal(clienteController, petController, servicoController);
     }

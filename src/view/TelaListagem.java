@@ -16,53 +16,37 @@ public class TelaListagem extends JFrame {
     public TelaListagem(ClienteController clienteController, PetController petController, ServicoController servicoController) {
         super("Listagem Geral");
 
-        setSize(500, 500);
+        setSize(600, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JTextArea areaTexto = new JTextArea();
         areaTexto.setEditable(false);
-        areaTexto.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        JScrollPane scroll = new JScrollPane(areaTexto);
+        add(scroll);
 
         StringBuilder sb = new StringBuilder();
 
-        // Listar Clientes
-        sb.append("=== CLIENTES ===\n");
         List<Cliente> clientes = clienteController.listarClientes();
-        if (clientes.isEmpty()) {
-            sb.append("Nenhum cliente cadastrado.\n");
-        } else {
-            for (Cliente c : clientes) {
-                sb.append(c).append("\n");
-            }
-        }
 
-        // Listar Pets (usando os clientes!)
-        sb.append("\n=== PETS ===\n");
-        List<Pet> pets = petController.listarPets(clientes);
-        if (pets.isEmpty()) {
-            sb.append("Nenhum pet cadastrado.\n");
-        } else {
+        sb.append("📋 CLIENTES:\n");
+        for (Cliente c : clientes) {
+            sb.append("- ").append(c.getNome()).append(" (CPF: ").append(c.getCpf()).append(")\n");
+
+            List<Pet> pets = petController.listarPets(c.getCpf());
             for (Pet p : pets) {
-                sb.append(p).append("\n");
+                sb.append("  🐾 Pet: ").append(p.getNome()).append(" - ").append(p.getEspecie()).append("\n");
             }
-        }
 
-        // Listar Serviços
-        sb.append("\n=== SERVIÇOS ===\n");
-        List<Servico> servicos = servicoController.listarServicos(clientes, pets);
-        if (servicos.isEmpty()) {
-            sb.append("Nenhum serviço contratado.\n");
-        } else {
+            List<Servico> servicos = servicoController.listarServicos();
             for (Servico s : servicos) {
-                sb.append(s).append("\n");
+                if (s.getCliente().getCpf().equals(c.getCpf())) {
+                    sb.append("  💼 Serviço: ").append(s.getNome()).append(" para ").append(s.getPet().getNome()).append("\n");
+                }
             }
         }
 
         areaTexto.setText(sb.toString());
-        JScrollPane scrollPane = new JScrollPane(areaTexto);
-        add(scrollPane);
-
         setVisible(true);
     }
 }
